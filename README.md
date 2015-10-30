@@ -1,4 +1,6 @@
 # javascript
 Javascript sample code .
 
-Can be used as a standalone code to meet the util projects
+Can be used as a standalone code in the projects .
+
+More to be updated

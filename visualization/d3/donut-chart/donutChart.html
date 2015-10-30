@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<meta http-equiv="content-type" content="text/html; charset=UTF8">
+<html>
+<head>
+	<title>D3 Donut chart example</title>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js"></script>
+</head>
+<script type="text/javascript"> 
+
+	function loadDonutChart() {
+ 		
+ 		var width = 460 ; 
+		var height = 300 ;
+		var radius = 130  ;
+
+		var defaultColors = [ "#F5B27F" , "#EEEEF0"] ; 
+	
+		var pieData = [ {
+			"value" : 100 , 
+			"name" : "#F5B27F" 
+		} , {
+			"value" : 70 , 
+			"name" : "#EEEEF0"
+		} ] ; 
+
+		var raidian = 2 * Math.PI; 
+		
+		       
+		var arc = d3.svg.arc()
+			.innerRadius(radius - 15)
+			.outerRadius(radius - 40 ); 
+	         
+		var svg = d3.select("#container")
+				.append("svg")//No I18N    	
+				.attr("width", width)//No I18N    	
+				.attr("height", height)//No I18N    	
+				.append("g")           //No I18N    	                
+				.attr("transform","translate( "+(width  / 2.0 )+" ,"+(height  / 2.6 )+")") ;   	
+			svg.append("svg:image")
+		   .attr('x',-74)
+		   .attr('y',-80)
+		   .attr('width', 150)
+		   .attr('height', 150)
+		   .attr("xlink:href","sample.png")
+
+		 
+	       
+		var total = 0;
+		for (var i = 0; i < pieData.length; i++) {		
+			total += pieData[i].value;
+			
+		} 		    
+			  
+		var nextStartAngle = 0;
+		for (var i = 0; i < pieData.length; i++) {
+			var childArcs = svg.append("path").datum({//No I18N    	
+				startAngle : nextStartAngle,
+				endAngle : nextStartAngle
+			}).style("fill", //No I18N    	
+					defaultColors[i])
+					.attr("d", arc)//No I18N    	
+					.transition()
+					.duration(1000)
+					.call(arcTween,(pieData[i].value / total) * raidian + nextStartAngle); 
+					var radian = (pieData[i].value / total) * raidian  ;         					
+					var centerRad = ( (radian ) / 2 + nextStartAngle) ;  
+					var centreRadianAdj =(  (radian ) / 2 + nextStartAngle) - (Math.PI / 2) ;          //to find the center radian of the each arc				
+					var x = (this.radius - 10 ) * Math.cos(centreRadianAdj) ; 	       
+					var y = (this.radius - 10 ) * Math.sin(centreRadianAdj) ; 				  		
+					nextStartAngle = nextStartAngle + radian ; 			
+					 
+		}
+	
+		
+		function arcTween(transition, newAngle) {
+			transition.attrTween("d" , function(d) {//No I18N    	
+				var interpolate = d3.interpolate(d.endAngle, newAngle);
+				return function(t) {
+					d.endAngle = interpolate(t);
+					return arc(d);
+				};
+			});
+		}
+	}
+
+	</script>
+<body>
+<button onclick="loadDonutChart()">Render Chart</button>
+
+<div id="container"></div>
+
+</body>
+
+
+</html>
